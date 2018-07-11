@@ -1,6 +1,6 @@
 {
   "name": "third-party-license-generator",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "this scrip will generate the third party license as a txt file based on the softwares from your application",
   "main": "dist/index.js",
   "scripts": {
@@ -59,8 +59,12 @@
     "type": "git",
     "url": "git+https://github.com/maomaoZH/tpl-generator.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "license",
+    "third part",
+    "auto generation",
+  ],
+  "author": "Maomao ZH",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/maomaoZH/tpl-generator/issues"
