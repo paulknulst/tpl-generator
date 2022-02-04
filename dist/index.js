@@ -1,3 +1,9 @@
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 var fs = require('fs');
@@ -81,4 +87,4 @@ var tplGenerator = function tplGenerator() {
   console.log('------------auto generate third party license is done------------');
 };
 
-export default tplGenerator;
+exports.default = tplGenerator;
