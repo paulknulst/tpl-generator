@@ -14,7 +14,7 @@ const licensesFilenames = [
 
 const CWD = process.cwd();
 
-const TPLfile = path.resolve(CWD, 'thirdPartyLicense.txt');
+const fileName = path.resolve(CWD, 'thirdPartyLicense.html');
 
 /**
  * get app packages and store in an array
@@ -22,9 +22,8 @@ const TPLfile = path.resolve(CWD, 'thirdPartyLicense.txt');
 const getProjectDependencies = (packageFile) => {
   const packageInfo = JSON.parse(packageFile);
   const packageDependencies = packageInfo.dependencies || {};
-  const packageDevDependencies = packageInfo.devDependencies || {};
 
-  return [...Object.keys(packageDependencies), ...Object.keys(packageDevDependencies)];
+  return [...Object.keys(packageDependencies)];
 };
 
 /**
@@ -63,21 +62,25 @@ const tplGenerator = () => {
 
   console.log('------------start to generate file------------', allDependencies.length);
 
-  let string = '';
+  let html = '<body>';
   allDependencies.forEach((dependencyName) => {
     if (fs.existsSync(path.resolve(CWD, 'node_modules/' + dependencyName + '/package.json'))) {
-      let dependency = getDependencyByName(dependencyName);
+      const dependency = getDependencyByName(dependencyName);
 
-      string += dependency.name + '@' + dependency.version + '\n';
-      string += (dependency.uri ? dependency.uri + '\n' : '');
-      string += (dependency.license ? dependency.license : '') + '\n\n';
+      html += '<div class="dependency">'
+      html += '<div class="dependency-name">' + dependency.name + '@' + dependency.version + '</div>';
+      html += '<div class="dependency-uri">' + (dependency.uri ? dependency.uri + '' : '') + '</div>'
+      html += '<div class="dependency-license">' + (dependency.license ? dependency.license : '') + '</div>';
+      html += '</div>'
+      html += '<hr />'
     } else {
       console.log(dependencyName + 'package json file is not found');
     }
   });
+  html += '</body>'
 
   try {
-    fs.writeFileSync(TPLfile, string);
+    fs.writeFileSync(fileName, html);
   } catch (err) {
     console.error('ERR', err);
   }

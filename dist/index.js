@@ -1,36 +1,20 @@
-'use strict';
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
-const fs = require('fs');
-const path = require('path');
+var fs = require('fs');
+var path = require('path');
 
+var licensesFilenames = ['LICENSE', 'LICENSE.MD', 'LICENSE.md', 'license', 'license.md', 'LICENSE.TXT', 'LICENSE.txt', 'licensse.txt'];
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+var CWD = process.cwd();
 
-function _toConsumableArray(arr) {
-  if (Array.isArray(arr)) {
-    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) {
-      arr2[i] = arr[i];
-    }
-    return arr2;
-  } else {
-    return Array.from(arr);
-  }
-}
-
-const licensesFilenames = ['LICENSE', 'LICENSE.MD', 'LICENSE.md', 'license', 'license.md', 'LICENSE.TXT', 'LICENSE.txt', 'licensse.txt'];
-
-const CWD = process.cwd();
-
-const fileName = path.resolve(CWD, 'thirdPartyLicense.html');
+var fileName = path.resolve(CWD, 'thirdPartyLicense.html');
 
 /**
  * get app packages and store in an array
  */
-const getProjectDependencies = function getProjectDependencies(packageFile) {
-  const packageInfo = JSON.parse(packageFile);
-  const packageDependencies = packageInfo.dependencies || {};
+var getProjectDependencies = function getProjectDependencies(packageFile) {
+  var packageInfo = JSON.parse(packageFile);
+  var packageDependencies = packageInfo.dependencies || {};
 
   return [].concat(_toConsumableArray(Object.keys(packageDependencies)));
 };
@@ -38,10 +22,10 @@ const getProjectDependencies = function getProjectDependencies(packageFile) {
 /**
  * get an individual package name version url and license if they are applied
  */
-const getDependencyByName = function getDependencyByName(dependencyName) {
-  const packageFile = fs.readFileSync(path.resolve(CWD, 'node_modules/' + dependencyName + '/package.json'));
-  const packageInfo = JSON.parse(packageFile);
-  const packageLicense = licensesFilenames.find(function (filename) {
+var getDependencyByName = function getDependencyByName(dependencyName) {
+  var packageFile = fs.readFileSync(path.resolve(CWD, 'node_modules/' + dependencyName + '/package.json'));
+  var packageInfo = JSON.parse(packageFile);
+  var packageLicense = licensesFilenames.find(function (filename) {
     if (fs.existsSync(path.resolve(CWD, 'node_modules/' + dependencyName + '/' + filename))) {
       return true;
     }
@@ -56,8 +40,8 @@ const getDependencyByName = function getDependencyByName(dependencyName) {
   };
 };
 
-const tplGenerator = function tplGenerator() {
-  let allDependencies = [];
+var tplGenerator = function tplGenerator() {
+  var allDependencies = [];
 
   /**
    * get app package json file package names
@@ -71,22 +55,22 @@ const tplGenerator = function tplGenerator() {
 
   console.log('------------start to generate file------------', allDependencies.length);
 
-  let html = '<body>';
+  var html = '<body>';
   allDependencies.forEach(function (dependencyName) {
     if (fs.existsSync(path.resolve(CWD, 'node_modules/' + dependencyName + '/package.json'))) {
-      const dependency = getDependencyByName(dependencyName);
+      var dependency = getDependencyByName(dependencyName);
 
-      html += '<div class="dependency">'
+      html += '<div class="dependency">';
       html += '<div class="dependency-name">' + dependency.name + '@' + dependency.version + '</div>';
-      html += '<div class="dependency-uri">' + (dependency.uri ? dependency.uri + '' : '') + '</div>'
+      html += '<div class="dependency-uri">' + (dependency.uri ? dependency.uri + '' : '') + '</div>';
       html += '<div class="dependency-license">' + (dependency.license ? dependency.license : '') + '</div>';
-      html += '</div>'
-      html += '<hr />'
+      html += '</div>';
+      html += '<hr />';
     } else {
       console.log(dependencyName + 'package json file is not found');
     }
   });
-  html = '</body>'
+  html += '</body>';
 
   try {
     fs.writeFileSync(fileName, html);
@@ -97,4 +81,4 @@ const tplGenerator = function tplGenerator() {
   console.log('------------auto generate third party license is done------------');
 };
 
-exports.default = tplGenerator;
+export default tplGenerator;

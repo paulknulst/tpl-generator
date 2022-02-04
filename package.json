@@ -4,7 +4,7 @@
   "description": "this script will generate the third party license as a html file based on the packages from your application. Only dependencies, not dev-dependencies",
   "main": "dist/index.js",
   "scripts": {
-    "build": "yarn clean:dist && NODE_ENV=production babel src --out-dir dist",
+    "build": "yarn clean:dist && babel src --out-dir dist",
     "clean:dist": "rimraf ./dist"
   },
   "dependencies": {
@@ -64,10 +64,13 @@
     "third party",
     "auto generation"
   ],
-  "author": "Maomao ZH",
+  "author": "Paul Knulst",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/paulknulst/tpl-generator/issues"
   },
-  "homepage": "https://github.com/paulknulst/tpl-generator#readme"
+  "homepage": "https://github.com/paulknulst/tpl-generator#readme",
+  "devDependencies": {
+    "rimraf": "^3.0.2"
+  }
 }
