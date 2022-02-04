@@ -1,5 +1,5 @@
 # third-party-license-generator
-this scrip will generate third party license content as a txt file based on the included softwares from your application
+this script will generate third party license content as a html file based on the included softwares from your application. It will only use the dependencies section from your package.json.
 
 
 ## how to use it

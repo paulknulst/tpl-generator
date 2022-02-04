@@ -1,38 +1,47 @@
 'use strict';
 
+const fs = require('fs');
+const path = require('path');
+
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+function _toConsumableArray(arr) {
+  if (Array.isArray(arr)) {
+    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) {
+      arr2[i] = arr[i];
+    }
+    return arr2;
+  } else {
+    return Array.from(arr);
+  }
+}
 
-var fs = require('fs');
-var path = require('path');
+const licensesFilenames = ['LICENSE', 'LICENSE.MD', 'LICENSE.md', 'license', 'license.md', 'LICENSE.TXT', 'LICENSE.txt', 'licensse.txt'];
 
-var licensesFilenames = ['LICENSE', 'LICENSE.MD', 'LICENSE.md', 'license', 'license.md', 'LICENSE.TXT', 'LICENSE.txt', 'licensse.txt'];
+const CWD = process.cwd();
 
-var CWD = process.cwd();
-
-var TPLfile = path.resolve(CWD, 'thirdPartyLicense.txt');
+const fileName = path.resolve(CWD, 'thirdPartyLicense.html');
 
 /**
  * get app packages and store in an array
  */
-var getProjectDependencies = function getProjectDependencies(packageFile) {
-  var packageInfo = JSON.parse(packageFile);
-  var packageDependencies = packageInfo.dependencies || {};
-  var packageDevDependencies = packageInfo.devDependencies || {};
+const getProjectDependencies = function getProjectDependencies(packageFile) {
+  const packageInfo = JSON.parse(packageFile);
+  const packageDependencies = packageInfo.dependencies || {};
 
-  return [].concat(_toConsumableArray(Object.keys(packageDependencies)), _toConsumableArray(Object.keys(packageDevDependencies)));
+  return [].concat(_toConsumableArray(Object.keys(packageDependencies)));
 };
 
 /**
  * get an individual package name version url and license if they are applied
  */
-var getDependencyByName = function getDependencyByName(dependencyName) {
-  var packageFile = fs.readFileSync(path.resolve(CWD, 'node_modules/' + dependencyName + '/package.json'));
-  var packageInfo = JSON.parse(packageFile);
-  var packageLicense = licensesFilenames.find(function (filename) {
+const getDependencyByName = function getDependencyByName(dependencyName) {
+  const packageFile = fs.readFileSync(path.resolve(CWD, 'node_modules/' + dependencyName + '/package.json'));
+  const packageInfo = JSON.parse(packageFile);
+  const packageLicense = licensesFilenames.find(function (filename) {
     if (fs.existsSync(path.resolve(CWD, 'node_modules/' + dependencyName + '/' + filename))) {
       return true;
     }
@@ -47,8 +56,8 @@ var getDependencyByName = function getDependencyByName(dependencyName) {
   };
 };
 
-var tplGenerator = function tplGenerator() {
-  var allDependencies = [];
+const tplGenerator = function tplGenerator() {
+  let allDependencies = [];
 
   /**
    * get app package json file package names
@@ -62,21 +71,25 @@ var tplGenerator = function tplGenerator() {
 
   console.log('------------start to generate file------------', allDependencies.length);
 
-  var string = '';
+  let html = '<body>';
   allDependencies.forEach(function (dependencyName) {
     if (fs.existsSync(path.resolve(CWD, 'node_modules/' + dependencyName + '/package.json'))) {
-      var dependency = getDependencyByName(dependencyName);
+      const dependency = getDependencyByName(dependencyName);
 
-      string += dependency.name + '@' + dependency.version + '\n';
-      string += dependency.uri ? dependency.uri + '\n' : '';
-      string += (dependency.license ? dependency.license : '') + '\n\n';
+      html += '<div class="dependency">'
+      html += '<div class="dependency-name">' + dependency.name + '@' + dependency.version + '</div>';
+      html += '<div class="dependency-uri">' + (dependency.uri ? dependency.uri + '' : '') + '</div>'
+      html += '<div class="dependency-license">' + (dependency.license ? dependency.license : '') + '</div>';
+      html += '</div>'
+      html += '<hr />'
     } else {
       console.log(dependencyName + 'package json file is not found');
     }
   });
+  html = '</body>'
 
   try {
-    fs.writeFileSync(TPLfile, string);
+    fs.writeFileSync(fileName, html);
   } catch (err) {
     console.error('ERR', err);
   }
